@@ -90,7 +90,7 @@ public class AccountServiceTest {
         //이메일이 중복되어야 하므로 true 를 반환한다
         when(accountRepository.existsByEmail(registerInfo.getEmail())).thenReturn(true);
 
-        //~002 테스트 대상 실행
+        //~002~003 테스트 대상 실행 및 테스트 대상 검사
         //테스트 중 RegisterFailureException 이 throwing 되는지 검사한다
         assertThrows(RegisterFailureException.class,
                 () -> accountService.register(registerInfo));
