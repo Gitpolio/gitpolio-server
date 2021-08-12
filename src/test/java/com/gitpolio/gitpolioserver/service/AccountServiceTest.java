@@ -44,26 +44,20 @@ public class AccountServiceTest {
      */@Test
     public void testRegister() {
          //~001 테스트 환경 구성
-         //RegisterInfoDto 에 들어갈 회원가입 정보를 생성한다
-        String name = lorem.getName();
-        String email = lorem.getEmail();
-        String password = lorem.getWords(1);
-        String githubToken = new String(Base64Coder.encode(lorem.getWords(4).getBytes(StandardCharsets.UTF_8)));
-
-        //RegisterInfoDto 에 회원가입 정보를 기입한다
-        RegisterInfoDto registerInfo = new RegisterInfoDto(name, email, password, githubToken);
+        //Random data 가 담긴 RegisterInfoDto 를 가져온다
+        RegisterInfoDto registerInfo = getRandomRegisterInfo();
 
         //이메일 중복여부 확인과 계정 저장이 제대로 되었는지 확인하기 위해서 account repository 를 mocking 한다
-        when(accountRepository.existsByEmail(email)).thenReturn(false);
+        when(accountRepository.existsByEmail(registerInfo.getEmail())).thenReturn(false);
         //~003 테스트 대상 검사 (when - Answer 로 검사하기떄문에 테스트 대상 실행 이전에 setting 한다)
         when(accountRepository.save(any())).thenAnswer(invocation -> {
                     Account account = invocation.getArgument(0);
 
-                    assertEquals(name, account.getName());
-                    assertEquals(email, account.getEmail());
+                    assertEquals(registerInfo.getName(), account.getName());
+                    assertEquals(registerInfo.getEmail(), account.getEmail());
                     //encode 된 password 를 저장해야한다
-                    assertEquals(passwordEncoder.encode(password), account.getPassword());
-                    assertEquals(githubToken, account.getGithubToken());
+                    assertEquals(passwordEncoder.encode(registerInfo.getPassword()), account.getPassword());
+                    assertEquals(registerInfo.getGithubToken(), account.getGithubToken());
 
                     return null;
                 }
@@ -71,7 +65,7 @@ public class AccountServiceTest {
 
         //비밀번호가 제대로 encoding 되었는지 확인하기 위해서 password encoder 의 encode method 를 mocking 한다
         String salt = lorem.getWords(1);
-        when(passwordEncoder.encode(password)).thenReturn(password + salt);
+        when(passwordEncoder.encode(registerInfo.getPassword())).thenReturn(registerInfo.getPassword() + salt);
 
         //~002 테스트 대상 실행
         //AccountService 의 register method 를 호출한다
@@ -79,10 +73,10 @@ public class AccountServiceTest {
 
         //~003 테스트 대상 검사
         //db 에 저장한 값을 return 하였는지 검사한다
-        assertEquals(name, account.getName());
-        assertEquals(email, account.getEmail());
-        assertEquals(passwordEncoder.encode(password), account.getEncodedPassword());
-        assertEquals(githubToken, account.getGithubToken());
+        assertEquals(registerInfo.getName(), account.getName());
+        assertEquals(registerInfo.getEmail(), account.getEmail());
+        assertEquals(passwordEncoder.encode(registerInfo.getPassword()), account.getEncodedPassword());
+        assertEquals(registerInfo.getGithubToken(), account.getGithubToken());
     }
 
     /*
@@ -90,23 +84,24 @@ public class AccountServiceTest {
      */@Test
     public void testRegisterFailure() {
         //~001 테스트 환경 구성
-        //RegisterInfoDto 에 들어갈 회원가입 정보를 생성한다
-        //TODO 2020.08.11 | 지인호
-        // Random Data 를 갖고있는 RegisterInfoDto 를 반환하는 getRandomRegisterInfo method 작성 및 해당 메서드를 사용하도록 Code refactor 하기
-        String name = lorem.getName();
-        String email = lorem.getEmail();
-        String password = lorem.getWords(1);
-        String githubToken = new String(Base64Coder.encode(lorem.getWords(4).getBytes(StandardCharsets.UTF_8)));
+        //Random data 가 담긴 RegisterInfoDto 를 가져온다
+        RegisterInfoDto registerInfo = getRandomRegisterInfo();
 
-        //RegisterInfoDto 에 회원가입 정보를 기입한다
-        RegisterInfoDto registerInfo = new RegisterInfoDto(name, email, password, githubToken);
-
-        //이메일이 중복되어야하므로 true 를 반환한다
-        when(accountRepository.existsByEmail(email)).thenReturn(true);
+        //이메일이 중복되어야 하므로 true 를 반환한다
+        when(accountRepository.existsByEmail(registerInfo.getEmail())).thenReturn(true);
 
         //~002 테스트 대상 실행
         //테스트 중 RegisterFailureException 이 throwing 되는지 검사한다
         assertThrows(RegisterFailureException.class,
                 () -> accountService.register(registerInfo));
+    }
+
+    public RegisterInfoDto getRandomRegisterInfo() {
+        String name = lorem.getName();
+        String email = lorem.getEmail();
+        String password = lorem.getWords(1);
+        String githubToken = new String(Base64Coder.encode(lorem.getWords(4).getBytes(StandardCharsets.UTF_8)));
+
+        return new RegisterInfoDto(name, email, password, githubToken);
     }
 }
