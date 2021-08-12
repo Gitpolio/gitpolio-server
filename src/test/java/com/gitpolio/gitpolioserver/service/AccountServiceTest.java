@@ -96,6 +96,7 @@ public class AccountServiceTest {
                 () -> accountService.register(registerInfo));
     }
 
+    //Random data 로 구성된 RegisterInfoDto 를 생성하여 반환한다
     public RegisterInfoDto getRandomRegisterInfo() {
         String name = lorem.getName();
         String email = lorem.getEmail();

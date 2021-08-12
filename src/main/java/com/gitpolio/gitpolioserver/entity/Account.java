@@ -33,7 +33,7 @@ public class Account {
     @Length(max = 50)
     @Setter private String email;
 
-    @Length(max = 25)
+    @Length(max = 128)
     @Setter private String password;
 
     @Length(max = 255)
