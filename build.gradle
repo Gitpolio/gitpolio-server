@@ -31,6 +31,8 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/com.thedeanda/lorem
 	testImplementation group: 'com.thedeanda', name: 'lorem', version: '2.1'
+	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.3'
 }
 
 test {

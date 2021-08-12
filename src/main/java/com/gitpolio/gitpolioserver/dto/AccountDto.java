@@ -1,12 +1,12 @@
 package com.gitpolio.gitpolioserver.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @RequiredArgsConstructor
-@Getter @Builder
+@AllArgsConstructor
+@Getter @Setter
+@Builder
 public class AccountDto {
-    private final String name, email, encodedPassword;
-    private final String githubToken;
+    private String name, email, encodedPassword;
+    private String githubToken;
 }

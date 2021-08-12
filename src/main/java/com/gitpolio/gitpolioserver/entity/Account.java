@@ -1,11 +1,12 @@
 package com.gitpolio.gitpolioserver.entity;
 
 import com.gitpolio.gitpolioserver.dto.AccountDto;
+import com.gitpolio.gitpolioserver.modelmapper.ModelMapperUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 
 import javax.persistence.*;
 
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 public class Account {
+
     @Builder
     public Account(@Length(max = 18) String name,
                    @Length(max = 50) String email,
@@ -28,24 +30,24 @@ public class Account {
     private Long id;
 
     @Length(max = 18)
-    @Setter private String name;
+    private String name;
 
     @Length(max = 50)
-    @Setter private String email;
+    private String email;
 
     @Length(max = 128)
-    @Setter private String password;
+    private String password;
 
     @Length(max = 255)
     @Column(name = "auth_token")
-    @Setter private String githubToken;
+    private String githubToken;
 
     public AccountDto toDto() {
-        return AccountDto.builder()
-                .name(name)
-                .email(email)
-                .encodedPassword(password)
-                .githubToken(githubToken)
-                .build();
+        ModelMapper modelMapper = ModelMapperUtils.getModelMapper();
+
+        AccountDto account = modelMapper.map(this, AccountDto.class);
+        account.setEncodedPassword(password);
+
+        return account;
     }
 }
