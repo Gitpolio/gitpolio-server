@@ -18,11 +18,11 @@ public class Account {
     @Builder
     public Account(@Length(max = 18) String name,
                    @Length(max = 50) String email,
-                   @Length(max = 25) String password,
+                   @Length(max = 25) String encodedPassword,
                    @Length(max = 255) String githubToken) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.encodedPassword = encodedPassword;
         this.githubToken = githubToken;
     }
 
@@ -35,8 +35,8 @@ public class Account {
     @Length(max = 50)
     private String email;
 
-    @Length(max = 128)
-    private String password;
+    @Length(max = 128) @Column(name = "password")
+    private String encodedPassword;
 
     @Length(max = 255)
     @Column(name = "auth_token")
@@ -46,7 +46,7 @@ public class Account {
         ModelMapper modelMapper = ModelMapperUtils.getModelMapper();
 
         AccountDto account = modelMapper.map(this, AccountDto.class);
-        account.setEncodedPassword(password);
+        account.setEncodedPassword(encodedPassword);
 
         return account;
     }
