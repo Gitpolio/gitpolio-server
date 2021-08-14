@@ -1,6 +1,7 @@
 package com.gitpolio.gitpolioserver.controller;
 
 import com.gitpolio.gitpolioserver.dto.AccountDto;
+import com.gitpolio.gitpolioserver.dto.LoginInfoDto;
 import com.gitpolio.gitpolioserver.dto.RegisterInfoDto;
 import com.gitpolio.gitpolioserver.service.AccountService;
 import com.thedeanda.lorem.LoremIpsum;
@@ -45,11 +46,35 @@ public class AccountControllerTest {
         //accountService 의 register 가 호출되었는지 (책임이 위임되었는지) 검사한다
         verify(accountService, times(1)).register(registerInfoDto);
 
-        //~002~003 테스트 대상 실행 및 테스트 대상 검사
+        //~003 테스트 대상 검사
         //책임을 위임할때 registerInfoDto 를 인자로 넘겨 주었는지,
         // service 의 return value 를 통해 client 에 응답한 ResponseEntity 를 잘 구성하였는지 검사한다
         assertEquals(account, responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void testLogin() {
+        //~001 테스트 환경 구성
+        LoginInfoDto loginInfoDto = getLoginInfoDto();
+        String token = new String(Base64Coder.encode(lorem.getWords(3).getBytes(StandardCharsets.UTF_8)));
+
+        when(accountService.login(loginInfoDto)).thenReturn(token);
+        //~002 테스트 대상 실행
+        ResponseEntity<String> responseEntity = accountController.login(loginInfoDto);
+
+        verify(accountService, (times(1))).login(loginInfoDto);
+
+        //~003 테스트 대상 검사
+        assertEquals(token, responseEntity.getBody());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    }
+
+    public LoginInfoDto getLoginInfoDto() {
+        String id = lorem.getEmail();
+        String rawPassword = lorem.getWords(1);
+
+        return new LoginInfoDto(id, rawPassword);
     }
 
     //Random data 로 구성된 RegisterInfoDto 를 생성하여 반환한다
