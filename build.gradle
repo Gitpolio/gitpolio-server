@@ -33,6 +33,7 @@ dependencies {
 	testImplementation group: 'com.thedeanda', name: 'lorem', version: '2.1'
 	// https://mvnrepository.com/artifact/org.modelmapper/modelmapper
 	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.3'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }
 
 test {
