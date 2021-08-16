@@ -1,5 +1,7 @@
 package com.gitpolio.gitpolioserver.advice;
 
+import com.gitpolio.gitpolioserver.advice.error.ErrorResponse;
+import com.gitpolio.gitpolioserver.advice.error.ErrorStatus;
 import com.gitpolio.gitpolioserver.exception.LoginFailureException;
 import com.gitpolio.gitpolioserver.exception.UnknownIdTypeException;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,25 @@ public class LoginAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<String> handlerException(LoginFailureException e) {
+    public ResponseEntity<ErrorResponse> handlerException(LoginFailureException e) {
         switch (e.getReason()) {
             case ID_NOT_FOUND:
-                return ResponseEntity.badRequest().body("아이디를 찾을 수 없습니다!");
+                return ResponseEntity.badRequest().body(ErrorResponse.builder()
+                        .message("아이디를 찾을 수 없습니다!")
+                        .status(ErrorStatus.LOGIN_ID_NOT_FOUND)
+                        .build());
             case WRONG_PASSWORD:
-                return ResponseEntity.badRequest().body("잘못된 비밀번호입니다!");
+                return ResponseEntity.badRequest().body(ErrorResponse.builder()
+                        .message("잘못된 비밀번호입니다!")
+                        .status(ErrorStatus.LOGIN_WRONG_PASSWORD)
+                        .build());
+            default:
+                return ResponseEntity.internalServerError().body(ErrorResponse.builder()
+                        .message("로그인중 오류가 발생하였습니다!!")
+                        .status(ErrorStatus.LOGIN_ERROR)
+                        .build());
         }
-        return ResponseEntity.badRequest().body("로그인에 실패하였습니다!");
     }
+
+
 }

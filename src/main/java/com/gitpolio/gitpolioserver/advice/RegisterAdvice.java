@@ -1,5 +1,7 @@
 package com.gitpolio.gitpolioserver.advice;
 
+import com.gitpolio.gitpolioserver.advice.error.ErrorResponse;
+import com.gitpolio.gitpolioserver.advice.error.ErrorStatus;
 import com.gitpolio.gitpolioserver.exception.RegisterFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,9 +20,18 @@ public class RegisterAdvice {
     }
 
     @ExceptionHandler(RegisterFailureException.class)
-    public ResponseEntity<String> handlingException(RegisterFailureException e) {
-        if(e.getReason().equals(RegisterFailureException.Reason.EMAIL_ALREADY_EXISTS))
-            return ResponseEntity.badRequest().body("이미 존재하는 이메일입니다!");
-        return ResponseEntity.badRequest().body("회원가입에 실패하였습니다!");
+    public ResponseEntity<ErrorResponse> handlingException(RegisterFailureException e) {
+        switch (e.getReason()) {
+            case EMAIL_ALREADY_EXISTS:
+                return ResponseEntity.badRequest().body(ErrorResponse.builder()
+                        .message("이미 존재하는 아이디 입니다!")
+                        .status(ErrorStatus.REGISTER_ID_ALREADY_EXISTS)
+                        .build());
+            default:
+                return ResponseEntity.internalServerError().body(ErrorResponse.builder()
+                .message("회원가입중 오류가 발생하였습니다!")
+                .status(ErrorStatus.REGISTER_ERROR)
+                .build());
+        }
     }
 }
