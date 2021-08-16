@@ -11,23 +11,15 @@ public class ErrorResponse {
     }
 
     @Builder
-    public ErrorResponse(ErrorStatus status, String message) {
-        this();
-        this.status = status;
-        this.message = message;
-    }
-
-    @Builder
-    public ErrorResponse(ErrorStatus status, String message, @URL String docUrl) {
+    private ErrorResponse(ErrorStatus status, String message, @URL String docUrl) {
         this();
         this.status = status;
         this.message = message;
         this.docUrl = docUrl;
     }
 
-    private Long id;
+    private final Long id;
     private ErrorStatus status;
     private String message;
-    @URL
     private String docUrl;
 }

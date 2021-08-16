@@ -15,17 +15,21 @@ RegisterFailureException
 @ControllerAdvice
 public class RegisterAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handlingException(MethodArgumentNotValidException e) {
-        return ResponseEntity.badRequest().body(e.getParameter().getParameterName() + " 의 유효성 검사 실패!");
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException e) {
+        ErrorResponse response = ErrorResponse.builder()
+                .message("회원가입 정보 검증에 실패하였습니다!")
+                .status(ErrorStatus.REGISTER_WRONG_REGISTER_INFO)
+                .build();
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(RegisterFailureException.class)
-    public ResponseEntity<ErrorResponse> handlingException(RegisterFailureException e) {
+    public ResponseEntity<ErrorResponse> handleException(RegisterFailureException e) {
         switch (e.getReason()) {
             case EMAIL_ALREADY_EXISTS:
                 return ResponseEntity.badRequest().body(ErrorResponse.builder()
-                        .message("이미 존재하는 아이디 입니다!")
-                        .status(ErrorStatus.REGISTER_ID_ALREADY_EXISTS)
+                        .message("이미 존재하는 이메일 입니다!")
+                        .status(ErrorStatus.REGISTER_EMAIL_ALREADY_EXISTS)
                         .build());
             default:
                 return ResponseEntity.internalServerError().body(ErrorResponse.builder()
