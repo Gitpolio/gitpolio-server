@@ -18,6 +18,12 @@ public class LoginAdvice {
 
     @ExceptionHandler
     public ResponseEntity<String> handlerException(LoginFailureException e) {
+        switch (e.getReason()) {
+            case ID_NOT_FOUND:
+                return ResponseEntity.badRequest().body("아이디를 찾을 수 없습니다!");
+            case WRONG_PASSWORD:
+                return ResponseEntity.badRequest().body("잘못된 비밀번호입니다!");
+        }
         return ResponseEntity.badRequest().body("로그인에 실패하였습니다!");
     }
 }

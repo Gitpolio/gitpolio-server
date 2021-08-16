@@ -19,6 +19,8 @@ public class RegisterAdvice {
 
     @ExceptionHandler(RegisterFailureException.class)
     public ResponseEntity<String> handlingException(RegisterFailureException e) {
+        if(e.getReason().equals(RegisterFailureException.Reason.EMAIL_ALREADY_EXISTS))
+            return ResponseEntity.badRequest().body("이미 존재하는 이메일입니다!");
         return ResponseEntity.badRequest().body("회원가입에 실패하였습니다!");
     }
 }
