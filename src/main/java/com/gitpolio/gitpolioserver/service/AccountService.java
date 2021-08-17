@@ -11,6 +11,7 @@ import com.gitpolio.gitpolioserver.exception.UnknownIdTypeException;
 import com.gitpolio.gitpolioserver.jwt.AuthTokenUtils;
 import com.gitpolio.gitpolioserver.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+
     public AccountDto register(RegisterInfoDto registerInfo) {
         //이미 해당 이메일로 가입한 계정이 있을경우 예외를 throw 한다
         String email = registerInfo.getEmail();
