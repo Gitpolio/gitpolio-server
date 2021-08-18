@@ -38,4 +38,14 @@ public class RegisterAdviceTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(response.getBody().getStatus(), ErrorStatus.REGISTER_EMAIL_ALREADY_EXISTS);
     }
+
+    @Test
+    public void testRegisterFailureException2() {
+        RegisterFailureException exception = mock(RegisterFailureException.class);
+        when(exception.getReason()).thenReturn(RegisterFailureException.Reason.NAME_ALREADY_EXISTS);
+        ResponseEntity<ErrorResponse> response =  registerAdvice.handleException(exception);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(response.getBody().getStatus(), ErrorStatus.REGISTER_NAME_ALREADY_EXISTS);
+    }
 }

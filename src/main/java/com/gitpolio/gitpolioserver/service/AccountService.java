@@ -11,6 +11,7 @@ import com.gitpolio.gitpolioserver.exception.UnknownIdTypeException;
 import com.gitpolio.gitpolioserver.jwt.AuthTokenUtils;
 import com.gitpolio.gitpolioserver.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,11 @@ public class AccountService {
                 .encodedPassword(encodedPassword)
                 .githubToken(registerInfo.getGithubToken())
                 .build();
-        accountRepository.save(account);
+        try {
+            accountRepository.save(account);
+        } catch (DataIntegrityViolationException e) {
+            throw new RegisterFailureException(RegisterFailureException.Reason.NAME_ALREADY_EXISTS);
+        }
         return account.toDto();
     }
 

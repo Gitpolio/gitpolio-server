@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 /* 다음 exception 에 대한 handling 이 필요하다
 MethodArgumentNotValidException
 RegisterFailureException
@@ -30,6 +32,11 @@ public class RegisterAdvice {
                 return ResponseEntity.badRequest().body(ErrorResponse.builder()
                         .message("이미 존재하는 이메일 입니다!")
                         .status(ErrorStatus.REGISTER_EMAIL_ALREADY_EXISTS)
+                        .build());
+            case NAME_ALREADY_EXISTS:
+                return ResponseEntity.badRequest().body(ErrorResponse.builder()
+                        .message("이미 존재하는 이름 입니다!")
+                        .status(ErrorStatus.REGISTER_NAME_ALREADY_EXISTS)
                         .build());
             default:
                 return ResponseEntity.internalServerError().body(ErrorResponse.builder()
