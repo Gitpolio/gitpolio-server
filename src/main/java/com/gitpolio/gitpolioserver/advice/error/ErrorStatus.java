@@ -10,6 +10,7 @@ public enum ErrorStatus {
     REGISTER_ERROR(3000, "Register error"),
     REGISTER_WRONG_REGISTER_INFO(3001, "Wrong register info"),
     REGISTER_EMAIL_ALREADY_EXISTS(3002, "Register id already exists"),
+    REGISTER_NAME_ALREADY_EXISTS(3003, "Register name already exists"),
 
     LOGIN_ERROR(4000, "Login error"),
     LOGIN_ID_NOT_FOUND(4001, "Login id not found"),

@@ -12,6 +12,7 @@ import com.gitpolio.gitpolioserver.repository.AccountRepository;
 import com.thedeanda.lorem.LoremIpsum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
@@ -94,6 +95,24 @@ public class AccountServiceTest {
 
         //이메일이 중복되어야 하므로 true 를 반환한다
         when(accountRepository.existsByEmail(registerInfo.getEmail())).thenReturn(true);
+
+        //~002~003 테스트 대상 실행 및 테스트 대상 검사
+        //테스트 중 RegisterFailureException 이 throwing 되는지 검사한다
+        assertThrows(RegisterFailureException.class,
+                () -> accountService.register(registerInfo));
+    }
+
+    /*
+    이미 같은 이름 가입된 이메일이 있을경우, DataIntegrityViolationException 을 throw 하므로,
+    이를 RegisterFailureException 으로 Wrapping 하여 던져야 한다.
+     */@Test
+    public void testRegisterFailure2() {
+        //~001 테스트 환경 구성
+        //Random data 가 담긴 RegisterInfoDto 를 가져온다
+        RegisterInfoDto registerInfo = getRandomRegisterInfo();
+
+        //이름이 중복되어야 하므로 DataIntegrityViolationException 을 반환한다
+        when(accountRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
 
         //~002~003 테스트 대상 실행 및 테스트 대상 검사
         //테스트 중 RegisterFailureException 이 throwing 되는지 검사한다

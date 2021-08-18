@@ -9,6 +9,6 @@ public class RegisterFailureException extends RuntimeException {
     private final Reason reason;
 
     public enum Reason {
-        EMAIL_ALREADY_EXISTS
+        NAME_ALREADY_EXISTS, EMAIL_ALREADY_EXISTS
     }
 }
