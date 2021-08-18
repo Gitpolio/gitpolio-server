@@ -11,7 +11,6 @@ import com.gitpolio.gitpolioserver.exception.UnknownIdTypeException;
 import com.gitpolio.gitpolioserver.jwt.AuthTokenUtils;
 import com.gitpolio.gitpolioserver.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

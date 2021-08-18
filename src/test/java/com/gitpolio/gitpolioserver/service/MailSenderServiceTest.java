@@ -49,7 +49,6 @@ public class MailSenderServiceTest {
     public void testSendEmailByInformation() throws MessagingException {
         //~001 테스트 환경 구성
         //mail sender service 로 보낼 메세지를 설정한다
-        String from = lorem.getEmail();
         String to = lorem.getEmail();
         String subject = lorem.getTitle(1);
         String message = lorem.getWords(10, 20);
@@ -67,6 +66,6 @@ public class MailSenderServiceTest {
         }).when(javaMailSender).send(any(MimeMessage.class));
 
         //~002 테스트 대상 실행
-        mailSenderService.sendEmail(from, to, subject, message);
+        mailSenderService.sendEmail(to, subject, message);
     }
 }
