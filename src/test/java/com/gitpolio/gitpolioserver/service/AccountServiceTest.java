@@ -50,7 +50,7 @@ public class AccountServiceTest {
     public void testRegister() {
          //~001 테스트 환경 구성
         //Random data 가 담긴 RegisterInfoDto 를 가져온다
-        RegisterInfoDto registerInfo = getRandomRegisterInfo();
+        RegisterInfoDto registerInfo = getRandomRegisterInfoDto();
 
         //이메일 중복여부 확인과 계정 저장이 제대로 되었는지 확인하기 위해서 account repository 를 mocking 한다
         when(accountRepository.existsByEmail(registerInfo.getEmail())).thenReturn(false);
@@ -90,7 +90,7 @@ public class AccountServiceTest {
     public void testRegisterFailure() {
         //~001 테스트 환경 구성
         //Random data 가 담긴 RegisterInfoDto 를 가져온다
-        RegisterInfoDto registerInfo = getRandomRegisterInfo();
+        RegisterInfoDto registerInfo = getRandomRegisterInfoDto();
 
         //이메일이 중복되어야 하므로 true 를 반환한다
         when(accountRepository.existsByEmail(registerInfo.getEmail())).thenReturn(true);
@@ -220,7 +220,7 @@ public class AccountServiceTest {
     }
 
     //Random data 로 구성된 RegisterInfoDto 를 생성하여 반환한다
-    public RegisterInfoDto getRandomRegisterInfo() {
+    public RegisterInfoDto getRandomRegisterInfoDto() {
          String name = lorem.getName();
          String email = lorem.getEmail();
          String password = lorem.getWords(1);
